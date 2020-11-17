@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   const vars =() =>{
-    
+    console.log("hy")
   }
   return (
     <View style={styles.container}>
