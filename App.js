@@ -1,15 +1,19 @@
 import { StatusBar } from 'expo-status-bar';
 import React , {useState} from 'react';
-import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-
+import { Button, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import CustomButton from "./components/ButtonComponent";
 export default function App() {
   const [getText,setText]= useState('');
-  const[getList, setList]=useState(['item 1','item 2'])
+  const[getList, setList]=useState([])
 
   const addItem=()=>{
     console.log(getText)
-    setList([...getList, getText]);
+    setList([...getList, {key: Math.random().toString() ,data:getText}]);
     setText('')
+  }
+  const removeItem=(itemKey)=>{
+    //var list = getList.filter(item=> item.key != itemKey)
+    setList(list => getList.filter(item=> item.key != itemKey));
   }
   return (
     <View style={styles.container}>
@@ -21,7 +25,11 @@ export default function App() {
         onChangeText={text=> setText(text)}
         value={getText}
         />
-      <Button title="New" onPress={addItem} />
+        <CustomButton text = "New" color="red"
+          onPressEvent={addItem}
+        />
+      {//<Button title="New" onPress={addItem} />
+      }
       </View>  
       
       <View>
@@ -29,18 +37,53 @@ export default function App() {
       </View>
       
       <ScrollView style={styles.scrollView}>
-        <Text style={{fontSize: 26}}> {getList.map((item) => 
-          <View style={styles.scrollViewItem}>
-        <Text>{item}</Text>
-    </View> )}
-        </Text>
+        {getList.map((item) => 
+        <TouchableOpacity 
+        key={item.key}
+        activeOpacity={0.7}
+        
+        >
+            <View style={styles.scrollViewItem}
+              key={item.key}>
+              <Text style={styles.scrollViewText}>Data: {item.data}</Text> 
+              <TouchableOpacity onPress={()=> removeItem(item.key)}>
+                <View style={styles.crossTextContainer} >
+                  <Text style={styles.crossScrollViewText}>X</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+        </TouchableOpacity>
+          )}
       </ScrollView>
+
     </View>
     
   );
 }
 
 const styles = StyleSheet.create({
+  crossTextContainer: {backgroundColor: 'red', borderRadius: 50, padding: 5, width: 30, justifyContent:"center", alignItems: "center"},
+  crossScrollViewText:{
+    fontSize: 16,
+    color:'white',
+    fontWeight: "bold"
+  }
+  ,scrollViewText:{
+    fontSize: 22,
+    color: 'white'
+  },scrollView:{
+    width: '80%',
+  },
+  scrollViewItem:{
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor:"grey",
+    alignSelf: "center",
+    padding: 10,
+    margin:5,
+    width: '97%',
+    borderRadius: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -67,18 +110,6 @@ const styles = StyleSheet.create({
   text:{
     fontSize: 32,
     color: 'darkgrey',
-  },
-  scrollViewItem:{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    backgroundColor:"grey",
-    alignSelf: "center",
-    padding: 10,
-    margin:5,
-    width: '70%',
-    borderRadius: 10,
-  },
-  scrollView:{
-    width: '100%',
   }
+  
 });
